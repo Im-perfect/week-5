@@ -10,7 +10,7 @@ const bodyParser = require("body-parser");
 const Movie = db.define("movies", {
   title: Sequelize.STRING,
   yearOfRelease: Sequelize.INTEGER,
-  synopsis: Sequelize.STRING
+  synopsis: Sequelize.TEXT
 });
 
 db.sync()

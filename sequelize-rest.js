@@ -50,9 +50,13 @@ app.post("/movies", (req, res, next) => {
 });
 
 // read all movies (the collections resource)
+// pagination
 app.get("/movies", (req, res, next) => {
-  Movie.findAll()
-    .then(movies => res.send(movies))
+  const limit = req.query.limit || 5;
+  const offset = req.query.offset || 0;
+  
+  Movie.findAndCountAll({ limit, offset })
+    .then(movies => res.send({ data: movies.rows, total: movies.count }))
     .catch(next);
 });
 
@@ -84,11 +88,11 @@ app.put("/movies/:id", (req, res, next) => {
 
 // delete a single movie resource You don't need any special logic. A standard REST implementation is ok.
 app.delete("/movies/:id", (req, res, next) => {
-    Movie.destroy({
-      where: {
-        id: req.params.id,
-      }
-    })
+  Movie.destroy({
+    where: {
+      id: req.params.id
+    }
+  })
     .then(numDeleted => {
       if (numDeleted) {
         res.status(204).end();
@@ -97,6 +101,6 @@ app.delete("/movies/:id", (req, res, next) => {
       }
     })
     .catch(next);
-  });
+});
 
 app.listen(port, () => console.log("Listening on port", port));
